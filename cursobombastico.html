@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curso MindHub – Evolução Total</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0F111A;
+      --card-dark: #1C1F2E;
+      --text-light: #FFFFFF;
+      --text-gray: #B1B5C3;
+      --accent: #3B82F6;
+      --highlight: #FACC15;
+      --section-bg: #181A27;
+      --success: #22C55E;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+    body { background: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+    header { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #1F2230, #11131B); }
+    header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 15px; color: var(--highlight); }
+    header p { font-size: 1.2rem; color: var(--text-gray); max-width: 700px; margin: 0 auto; }
+    .cta-btn { display: inline-block; margin: 30px auto 60px auto; background: var(--accent); color: var(--text-light); padding: 15px 35px; font-size: 1.3rem; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+    .cta-btn:hover { background: #2563EB; }
+    .section-title { text-align: center; font-size: 2rem; font-weight: 700; margin: 50px 0 30px 0; color: var(--highlight); }
+    .modules { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; padding: 20px; }
+    .module-card { background: var(--card-dark); border-radius: 15px; padding: 25px; width: 280px; box-shadow: 0 6px 25px rgba(0,0,0,0.6); transition: transform 0.3s, box-shadow 0.3s; }
+    .module-card:hover { transform: translateY(-10px); box-shadow: 0 12px 30px rgba(59,130,246,0.5); }
+    .module-card h2 { font-size: 1.4rem; margin-bottom: 12px; color: var(--accent); }
+    .module-card p { font-size: 0.95rem; color: var(--text-gray); line-height: 1.4rem; margin-bottom: 8px; }
+    .course-info { text-align: center; margin: 40px 20px; }
+    .course-info p { font-size: 1.1rem; margin: 10px 0; color: var(--text-gray); }
+    .course-info span { font-weight: bold; color: var(--highlight); }
+    .reviews, .testimonials { text-align: center; margin: 40px 20px; }
+    .stars { color: var(--highlight); font-size: 1.2rem; margin-bottom: 10px; }
+    .testimonial-card { background: var(--card-dark); padding: 20px; margin: 15px auto; max-width: 500px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .testimonial-card p { font-size: 1rem; color: var(--text-gray); line-height: 1.4rem; margin: 5px 0; }
+    .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background-color: var(--card-dark); padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.7); }
+    .modal-content h2 { margin-bottom: 15px; color: var(--accent); }
+    .modal-content input { width: 100%; padding: 12px; border-radius: 8px; border: none; margin: 10px 0; }
+    .modal-content button { background: var(--highlight); color: var(--bg-dark); font-weight: bold; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+    .modal-content button:hover { background: #FBBF24; }
+    .close-modal { position: absolute; top: 10px; right: 15px; font-size: 1.8rem; cursor: pointer; font-weight: bold; }
+    .success-message { color: var(--success); font-weight: bold; margin-top: 15px; }
+    footer { text-align: center; padding: 25px; font-size: 0.9rem; color: var(--text-gray); margin-top: 60px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Curso MindHub – Evolução Total</h1>
+    <p>Transforme sua mente, habilidades e resultados. Um curso completo com módulos poderosos que te colocarão à frente da concorrência.</p>
+  </header>
+
+  <div class="course-info">
+    <p>💰 Valor original: <span>R$ 200</span> | Promoção especial: <span>R$ 50</span></p>
+    <p>🎯 Vagas limitadas! Garanta sua matrícula agora.</p>
+    <p>👥 Alunos: <span id="alunosCount">1.254</span> | Avaliação média: <span>4.9/5</span></p>
+    <p id="vagasRestantes">⏳ Vagas restantes: 25</p>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="cta-btn" onclick="openModal()">Quero me inscrever!</button>
+  </div>
+
+  <h2 class="section-title">Módulos do Curso</h2>
+  <section class="modules">
+    <div class="module-card"><h2>Mentalidade Avançada</h2><p>Treine sua mente para pensar grande, agir com confiança e tomar decisões estratégicas.</p><p>Foco total, disciplina imbatível e resiliência contínua.</p></div>
+    <div class="module-card"><h2>Habilidades Poderosas</h2><p>Desenvolva competências que farão você se destacar na vida pessoal e profissional.</p><p>Comunicação persuasiva, liderança e tomada de decisão rápida.</p></div>
+    <div class="module-card"><h2>Estratégias e Ação</h2><p>Transforme conhecimento em resultados reais e práticos no seu dia a dia.</p><p>Planejamento de metas, hábitos de alta performance e ferramentas de produtividade.</p></div>
+    <div class="module-card"><h2>Segredos Extras</h2><p>Conteúdos exclusivos e técnicas avançadas pouco conhecidas pelos coaches comuns.</p><p>Mentorias especiais e insights para acelerar seu aprendizado.</p></div>
+    <div class="module-card"><h2>Inteligência Artificial Aplicada</h2><p>Aprenda a usar IA a seu favor para otimizar decisões, criar oportunidades e multiplicar resultados.</p></div>
+    <div class="module-card"><h2>Comunicação Eficaz</h2><p>Domine técnicas de persuasão, negociação e expressão clara para influenciar positivamente qualquer situação.</p></div>
+  </section>
+
+  <h2 class="section-title">Depoimentos de Alunos</h2>
+  <section class="testimonials">
+    <div class="testimonial-card"><p>“Este curso mudou minha vida! Recomendo para todos que querem evoluir de verdade.” – Ana C.</p></div>
+    <div class="testimonial-card"><p>“Aprendi mais em 1 mês do que em anos de outros cursos. Simplesmente incrível!” – Marcos T.</p></div>
+    <div class="testimonial-card"><p>“As técnicas de mentalidade e produtividade são insanas! Sinto-me parte do 1% que age.” – Luiza R.</p></div>
+  </section>
+
+  <div class="reviews">
+    <div class="stars">⭐⭐⭐⭐⭐</div>
+    <p>Avaliação média: 4.9/5</p>
+  </div>
+
+  <!-- Modal Cadastro -->
+  <div class="modal" id="cadastroModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <h2>Cadastre-se no Curso</h2>
+      <input type="text" id="nome" placeholder="Seu nome" required>
+      <input type="email" id="email" placeholder="Seu melhor email" required>
+      <button onclick="enviarCadastro()">Finalizar Inscrição</button>
+      <p class="success-message" id="successMsg"></p>
+    </div>
+  </div>
+
+  <footer>
+    MindHub – Todos os direitos reservados © 2025
+  </footer>
+
+  <script>
+    let alunos = 1254;
+    let vagas = 25;
+
+    function openModal() {
+      document.getElementById('cadastroModal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('cadastroModal').style.display = 'none';
+      document.getElementById('successMsg').innerText = '';
+      document.getElementById('nome').value = '';
+      document.getElementById('email').value = '';
+    }
+
+    function enviarCadastro() {
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      if (nome && email) {
+        alunos++;
+        vagas = Math.max(vagas-1,0);
+        document.getElementById('alunosCount').innerText = alunos.toLocaleString();
+        document.getElementById('vagasRestantes').innerText = `⏳ Vagas restantes: ${vagas}`;
+        document.getElementById('successMsg').innerText = `🎉 Parabéns ${nome}! Você é um dos 1% de pessoas que tomam decisões inteligentes. Entraremos em contato em até 24h com todos os detalhes. Prepare-se para evoluir como nunca!`;
+        setTimeout(closeModal, 8000);
+      } else {
+        alert('Por favor, preencha todos os campos.');
+      }
+    }
+
+    // Animação de contagem de alunos (opcional)
+    setInterval(() => {
+      alunos += Math.floor(Math.random()*3);
+      document.getElementById('alunosCount').innerText = alunos.toLocaleString();
+    }, 5000);
+
+  </script>
+
+</body>
+</html>

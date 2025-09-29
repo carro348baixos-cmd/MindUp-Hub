@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindUp Hub</title>
+
+  <!-- Fonte clean -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --dark-bg: #0F111A;
+      --dark-card: #1C1F2E;
+      --cinza-claro: #B1B5C3;
+      --branco: #FFFFFF;
+      --azul-claro: #3B82F6;
+      --amarelo: #FACC15;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+    body { background: var(--dark-bg); color: var(--branco); overflow-x: hidden; }
+
+    /* canvas partículas */
+    #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+    header { text-align: center; padding: 60px 20px; }
+    header h1 { font-size: 2.8rem; margin-bottom: 10px; font-weight: 800; }
+    header p { font-size: 1.2rem; color: var(--cinza-claro); max-width: 650px; margin: 0 auto; }
+
+    /* Vídeo */
+    .video-container { position: relative; width: 100%; max-width: 950px; margin: 50px auto 30px auto; padding: 0 20px; aspect-ratio: 16/9; overflow: hidden; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+    .video-container video { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .video-poster { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; display: block; }
+
+    .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(59,130,246,0.9); border: none; border-radius: 50%; width: 80px; height: 80px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(59,130,246,0.8); transition: 0.3s; }
+    .play-btn:hover { background: #2563EB; box-shadow: 0 0 40px rgba(59,130,246,1); }
+    .play-btn::before { content: "▶"; color: white; font-size: 2rem; margin-left: 5px; }
+
+    .cta-btn { display: inline-block; margin: 25px auto 60px auto; background: var(--azul-claro); color: var(--branco); padding: 15px 35px; font-size: 1.2rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation: pulseGlow 2s infinite; }
+    .cta-btn:hover { background: #2563EB; }
+
+    .section-title { text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 30px; color: var(--branco); }
+
+    .books { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; padding: 20px; }
+    .book-card { background-color: var(--dark-card); border-radius: 12px; width: 260px; padding: 20px; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.6); opacity: 0; transform: scale(0.95); animation: fadeZoom 0.8s ease forwards; }
+    .book-card img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
+    .book-card h2 { font-size: 1.3rem; margin-bottom: 10px; }
+    .book-card p.desc { font-size: 0.95rem; color: var(--cinza-claro); margin-bottom: 10px; }
+    .book-card p.price { font-weight: bold; margin-bottom: 15px; }
+    .book-card button { background: var(--amarelo); border: none; padding: 12px 22px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .book-card button:hover { background: #EAB308; }
+
+    /* Mini Carrinho */
+    #cartFixed { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; cursor: pointer; z-index: 1001; }
+    #cartFixed img { width: 100%; }
+    #cartCount { position: absolute; top: -10px; right: -10px; background: var(--amarelo); color: black; font-weight: bold; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+
+    #cartMini { position: fixed; bottom: 90px; right: 20px; background: var(--dark-card); padding: 15px; border-radius: 12px; width: 280px; display: none; z-index: 1002; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+    #cartMini img { width: 60px; height: 60px; margin-right: 10px; vertical-align: middle; }
+    #cartMini div.cartItem { display: flex; align-items: center; margin-bottom: 10px; }
+    .closeMini { position: absolute; top: 5px; right: 10px; cursor: pointer; font-size: 1.2rem; font-weight: bold; }
+    #cartMini button { width: 100%; padding: 10px; margin-top: 10px; background: var(--azul-claro); color: white; border: none; border-radius: 6px; cursor: pointer; }
+    #cartMini button:hover { background: #2563EB; }
+
+    /* Modal PIX */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1003; }
+    .modal-content { background-color: var(--dark-card); padding: 30px; border-radius: 12px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.7); position: relative; }
+    .modal-content img { width: 220px; margin-bottom: 20px; }
+    .modal-content input, .modal-content button, .modal-content label { display: block; width: 100%; margin: 10px 0; }
+    .modal-content input { padding: 12px; border-radius: 6px; border: none; outline: none; }
+    .modal-content button { background: var(--azul-claro); border: none; padding: 12px; border-radius: 6px; color: var(--branco); font-weight: bold; cursor: pointer; }
+    .close { position: absolute; top: 10px; right: 15px; font-size: 1.8rem; cursor: pointer; font-weight: bold; }
+
+    footer { text-align: center; padding: 25px; font-size: 0.9rem; color: var(--cinza-claro); margin-top: 60px; }
+
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 20px rgba(59,130,246,0.6); } 50% { box-shadow: 0 0 40px rgba(59,130,246,1); } }
+    @keyframes fadeZoom { to { opacity: 1; transform: scale(1); } }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<header>
+  <h1>Bem-vindo ao MindUp Hub</h1>
+  <p>Aprenda rápido. Evolua sua mente. Escolha seu livro agora e dê o próximo passo no seu futuro.</p>
+</header>
+
+<div class="video-container">
+  <img src="img/hub2.PNG" alt="Thumbnail do vídeo" class="video-poster" id="videoPoster">
+  <button class="play-btn" id="playBtn"></button>
+  <video id="introVideo">
+    <source src="vid/intro.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo.
+  </video>
+</div>
+
+<div style="text-align:center;">
+  <button class="cta-btn" onclick="window.location.href='cursobombastico.html'">
+    DESPERTE SEU POTENCIAL
+  </button>
+</div>
+
+<h2 class="section-title">📚 Leituras Complementares</h2>
+
+<section class="books">
+  <div class="book-card" style="animation-delay:0.2s" data-price="20.00" data-img="img/prudutividade.png">
+    <img src="img/prudutividade.png" alt="Os Segredos da Produtividade">
+    <h2>Os Segredos da Produtividade</h2>
+    <p class="desc">Descubra técnicas práticas e comprovadas para organizar seu tempo, aumentar a concentração e alcançar resultados rápidos no dia a dia.</p>
+    <p class="price">R$ 20,00</p>
+    <button onclick="addToCart(this)">Adicionar ao carrinho</button>
+  </div>
+  <div class="book-card" style="animation-delay:0.4s" data-price="20.00" data-img="img/piscologia.png">
+    <img src="img/piscologia.png" alt="Psicologia Simples">
+    <h2>Psicologia Simples</h2>
+    <p class="desc">Aprenda os conceitos mais importantes da psicologia de forma simples, para entender comportamentos, melhorar relacionamentos e desenvolver inteligência emocional.</p>
+    <p class="price">R$ 20,00</p>
+    <button onclick="addToCart(this)">Adicionar ao carrinho</button>
+  </div>
+  <div class="book-card" style="animation-delay:0.6s" data-price="20.00" data-img="img/artificial.png">
+    <img src="img/artificial.png" alt="Inteligência Artificial para Leigos">
+    <h2>Inteligência Artificial para Leigos</h2>
+    <p class="desc">Uma introdução clara à inteligência artificial, explicando como ela funciona, suas aplicações no mundo real e como você pode tirar proveito dessa tecnologia.</p>
+    <p class="price">R$ 20,00</p>
+    <button onclick="addToCart(this)">Adicionar ao carrinho</button>
+  </div>
+</section>
+
+<!-- Carrinho -->
+<div id="cartFixed">
+  <img src="img/carrinho.png" alt="Carrinho">
+  <span id="cartCount">0</span>
+</div>
+<div id="cartMini">
+  <span class="closeMini" onclick="closeCartMini()">&times;</span>
+  <div id="cartItemsContainer"></div>
+  <p>Total: R$ <span id="cartTotal">0.00</span></p>
+  <button onclick="openPixModal()">Pagar via PIX</button>
+</div>
+
+<!-- Modal PIX -->
+<div class="modal" id="pixModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img src="img/pix.png" id="modalPixImg" alt="PIX QR Code">
+    <p>Escaneie o QR code, faça o pagamento e envie o comprovante junto com seu email para receber o ebook.</p>
+    <input type="email" placeholder="Digite seu melhor email" required>
+    <label for="comprovante">Envie seu comprovante</label>
+    <input type="file" id="comprovante" accept="image/*">
+    <button>Enviar Comprovante</button>
+  </div>
+</div>
+
+<footer>
+  MindUp Hub – Todos os direitos reservados © 2025
+</footer>
+
+<script>
+  // modal PIX
+  function openPixModal() {
+    document.getElementById('pixModal').style.display='flex';
+  }
+  function closeModal() { document.getElementById('pixModal').style.display='none'; }
+  window.onclick = function(event) {
+    if(event.target==document.getElementById('pixModal')) closeModal();
+  }
+
+  // vídeo
+  const playBtn=document.getElementById("playBtn");
+  const videoPoster=document.getElementById("videoPoster");
+  const introVideo=document.getElementById("introVideo");
+
+  playBtn.addEventListener("click",()=>{
+    playBtn.style.display="none";
+    videoPoster.style.display="none";
+    introVideo.style.display="block";
+    introVideo.setAttribute("controls","true");
+    introVideo.play();
+  });
+
+  // partículas
+  const canvas=document.getElementById("particles");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  let particles=[];
+  for(let i=0;i<50;i++){particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5});}
+  function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="rgba(59,130,246,0.6)";particles.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw);}
+  draw();
+  window.onresize=()=>{canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+
+  // Carrinho
+  let cart=[];
+  const cartFixed=document.getElementById('cartFixed');
+  const cartMini=document.getElementById('cartMini');
+
+  cartFixed.addEventListener('click',()=>{updateCartMini();cartMini.style.display='block';});
+  function closeCartMini(){cartMini.style.display='none';}
+
+  function addToCart(btn){
+    const card=btn.parentElement;
+    const title=card.querySelector('h2').innerText;
+    const price=parseFloat(card.getAttribute('data-price'));
+    const img=card.getAttribute('data-img');
+
+    if(cart.some(item=>item.title===title)) return alert('Este ebook já está no carrinho.');
+    cart.push({title,price,img});
+    document.getElementById('cartCount').innerText=cart.length;
+    updateCartMini();
+    cartMini.style.display='block';
+  }
+
+  function updateCartMini(){
+    const container=document.getElementById('cartItemsContainer');
+    container.innerHTML='';
+    let total=0;
+    cart.forEach(item=>{
+      const div=document.createElement('div');
+      div.className='cartItem';
+      div.innerHTML=`<img src="${item.img}" alt="${item.title}"><p>${item.title} - R$ ${item.price.toFixed(2)}</p>`;
+      container.appendChild(div);
+      total+=item.price;
+    });
+    document.getElementById('cartTotal').innerText=total.toFixed(2);
+  }
+</script>
+</body>
+</html>
